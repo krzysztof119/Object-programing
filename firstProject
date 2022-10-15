@@ -8,11 +8,11 @@ class student {
     }
 }
 
-class classroom {
+class station {
     int number;
     student user;
     
-    public classroom(int _number, student _user){
+    public station(int _number, student _user){
         number = _number;
         user = _user;
     }
@@ -21,7 +21,7 @@ class classroom {
 class main {
     public static void main(String[] args) {
         student student1 = new student("Anna", 21);
-        classroom station1 = new classroom(1, student1);
+        station station1 = new station(1, student1);
         System.out.println(station1.user.name);
     }
 }
