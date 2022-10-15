@@ -1,13 +1,3 @@
-class classroom {
-    int number;
-    student user;
-    
-    public classroom(int _number, student _user){
-        number = _number;
-        user = _user;
-    }
-}
-
 class student {
     String name;
     int age;
@@ -15,6 +5,16 @@ class student {
     public student(String _name, int _age){
         name = _name;
         age = _age;
+    }
+}
+
+class classroom {
+    int number;
+    student user;
+    
+    public classroom(int _number, student _user){
+        number = _number;
+        user = _user;
     }
 }
 
