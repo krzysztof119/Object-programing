@@ -1,7 +1,7 @@
 class Pen {
-    String brand;
-    float length;
-    float thickness;
+    private String brand;
+    private float length;
+    private float thickness;
     
     public Pen(String _brand, double _length, double _thickness) {
         this(_brand, (float) _length, (float) _thickness);
