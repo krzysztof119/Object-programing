@@ -21,7 +21,7 @@ class Pen {
         thickness = _thickness;
     }
     
-    public void printPenParametes(){
+    public void display(){
         System.out.println("Brand is: " + brand + ", length is: " + length + ", thickenss is: " + thickness);
     }
 }
@@ -29,6 +29,6 @@ class Pen {
 class main {
     public static void main(String[] args) {
         Pen Marker1 = new Pen("Copic", 2.1f, 0.2f);
-        Marker1.printPenParametes();
+        Marker1.display();
     }
 }
