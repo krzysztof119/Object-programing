@@ -7,7 +7,7 @@ class Logarithm implements Number {
         @Override
         public double doubleValue() { 
             try{
-                if(base<=0 || (base == 1 && argument != 1)){
+                if(base<=0 || base == 1){
                     throw new ArithmeticException("cannot make calculation with base " +  Double.toString(base) + "\n");
                 }
                 if(argument<=0){
@@ -28,7 +28,7 @@ class Logarithm implements Number {
 
 class HelloWorld {
     public static void main(String[] args) {
-        Logarithm Log = new Logarithm(0, 0);
+        Logarithm Log = new Logarithm(1, 0);
         Log.doubleValue();
     }
 }
