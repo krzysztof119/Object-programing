@@ -4,10 +4,10 @@ interface Number{
 
 class Logarithm implements Number {
   private double base, argument;
-        @Override
+  
         public double doubleValue() { 
             try{
-                if(base<=0 || base == 1){
+                if(base<=0 || (base == 1 && argument != 1)){
                     throw new ArithmeticException("cannot make calculation with base " +  Double.toString(base) + "\n");
                 }
                 if(argument<=0){
@@ -20,7 +20,7 @@ class Logarithm implements Number {
             System.out.println(Math.log(this.argument) / Math.log(this.base));
             return 0;
         }
-  public Logarithm(double inputBase, double inputArgument) {
+    public Logarithm(double inputBase, double inputArgument) {
     this.base = inputBase;
     this.argument = inputArgument;
   }
@@ -28,7 +28,7 @@ class Logarithm implements Number {
 
 class HelloWorld {
     public static void main(String[] args) {
-        Logarithm Log = new Logarithm(1, 0);
+        Logarithm Log = new Logarithm(0, 0);
         Log.doubleValue();
     }
 }
