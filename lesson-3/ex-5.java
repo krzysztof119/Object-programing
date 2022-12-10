@@ -31,8 +31,8 @@ class Euro extends FakeCantor implements Currency{
         this((float)money);
     }
     
-    public Euro addedCurrency(float value, String currency){return new Euro(money + FakeCantor.euroToRate(currency) * value);}
-    public Euro subtractedCurrency(float value, String currency){return new Euro(money - FakeCantor.euroToRate(currency) * value);}
+    public Euro addedCurrency(float value, String currency){return new Euro(money + FakeCantor.euroToRate(currency) * value);}      //FakeCantor doesn't work
+    public Euro subtractedCurrency(float value, String currency){return new Euro(money - FakeCantor.euroToRate(currency) * value);} //FakeCantor doesn't work
     public String abbreviation(){return "EUR";}
     public String symbol(){return "E";}
     public String balance(){return Float.toString(money);}
