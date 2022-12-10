@@ -22,7 +22,7 @@ interface Currency {
 }
 
 class Euro extends FakeCantor implements Currency{
-    public float money;
+    private float money;
     
     public Euro(float money){
         this.money = money;
