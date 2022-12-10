@@ -42,6 +42,10 @@ class Euro extends FakeCantor implements Currency{
 class Main {
     public static void main(String[] args) {
         Euro customer1 = new Euro(20f);
+        Euro customer1_2 = customer1.addedCurrency(10f, "USD");
+        Euro customer1_3 = customer1_2.subtractedCurrency(5f, "JPY");
         System.out.println(customer1.balance());
+        System.out.println(customer1_2.balance());
+        System.out.println(customer1_3.balance());
     }
 }
