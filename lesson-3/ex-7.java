@@ -7,19 +7,18 @@ class Logarithm implements Number {
         @Override
         public double doubleValue() { 
             try{
-                if(base<=0){
-                    throw new ArithmeticException("error: base " +  Double.toString(base) + " cannot be less then 0\n");
+                if(base<=0 || (base == 1 && argument != 1)){
+                    throw new ArithmeticException("cannot make calculation with base " +  Double.toString(base) + "\n");
                 }
-                return Math.log(this.argument) / Math.log(this.base);
+                if(argument<=0){
+                    throw new ArithmeticException("cannot make calculation with argument " +  Double.toString(argument) + "\n");
+                }
             }   catch(ArithmeticException x){
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Cannot make calculations for this number: %d",
-                        x
-                    ),
-                x
-                );
+                System.out.println("Error: "+x);
+                return 0;
             }
+            System.out.println(Math.log(this.argument) / Math.log(this.base));
+            return 0;
         }
   public Logarithm(double inputBase, double inputArgument) {
     this.base = inputBase;
@@ -29,7 +28,7 @@ class Logarithm implements Number {
 
 class HelloWorld {
     public static void main(String[] args) {
-        Logarithm Log = new Logarithm(0, 2);
-        System.out.println(Log.doubleValue());
+        Logarithm Log = new Logarithm(0, 0);
+        Log.doubleValue();
     }
 }
