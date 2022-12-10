@@ -29,7 +29,7 @@ class Logarithm implements Number {
 
 class HelloWorld {
     public static void main(String[] args) {
-        Logarithm Log = new Logarithm(1, 0);
+        Logarithm Log = new Logarithm(0, 2);
         System.out.println(Log.doubleValue());
     }
 }
