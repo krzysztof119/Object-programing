@@ -9,13 +9,13 @@ class Numbers {
     
     public int max() { return Math.max(a, b);}
     public int min() { return Math.min(a, b);}
-    public float avg() { return (a + b) / 2;}
+    public float avg() { return (a + b) / 2f;}
 }
 
 
 class Main{
     public static void main(String[] args) {
-        Numbers X = new Numbers(5, 10);
+        Numbers X = new Numbers(15, 10);
         System.out.println(X.max()+"\n");
         System.out.println(X.min()+"\n");
         System.out.println(X.avg()+"\n");
