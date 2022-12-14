@@ -34,10 +34,7 @@ class Member extends Library{
             System.out.print("Request canceled due to exceeding the limit of rental books possible"+"\n");
             return;
         }
-        for(String arg : args){
-            borrowed_books.add(arg);
-            borrowed_limit += 1;
-        }
+        borrowed_books.addAll(Arrays.asList(args));
         System.out.print(borrowed_books+" "+borrowed_books.size()+"\n");
     }
 
@@ -49,7 +46,7 @@ class Member extends Library{
 public class Main {
     public static void main(String[] args) {
         Member czytelnik1 = new Member("Pawel", "Kowalski");
-        czytelnik1.addrent("Nic", "Test", "1", "2", "3", "4");czytelnik1.addrent();
+        czytelnik1.addrent("0", "1", "2", "3", "4", "5");czytelnik1.addrent("0");
 
         czytelnik1.displayName();czytelnik1.displayLastName();czytelnik1.displayDebt();
     }
