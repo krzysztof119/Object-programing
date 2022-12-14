@@ -32,7 +32,7 @@ class Member extends Library{
     }
 }
 
-class HelloWorld {
+public class Main {
     public static void main(String[] args) {
         Member czytelnik1 = new Member("Pawel", "Kowalski");
         czytelnik1.displayName();czytelnik1.displayLastName();czytelnik1.displayDebt();
