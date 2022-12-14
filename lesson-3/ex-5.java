@@ -30,10 +30,10 @@ class Euro extends FakeCantor implements Currency{
         this((float)money);
     }
     
-    public Euro addedCurrency(float value, String currency){return new Euro(money + value / euroToRate(currency));}      //FakeCantor doesn't work
-    public Euro subtractedCurrency(float value, String currency){return new Euro(money - value / euroToRate(currency));} //FakeCantor doesn't work
+    public Euro addedCurrency(float value, String currency){return new Euro(money + value / euroToRate(currency));}
+    public Euro subtractedCurrency(float value, String currency){return new Euro(money - value / euroToRate(currency));}
     public String abbreviation(){return "EUR";}
-    public String symbol(){return "E";}
+    public String symbol(){return "\u20AC";}
     public String balance(){return Float.toString(money);}
     public float dollarExchangeRate(){return 1.0366f;}
 }
@@ -43,8 +43,8 @@ class Main {
         Euro customer1 = new Euro(20f);
         Euro customer1_2 = customer1.addedCurrency(10f, "USD");
         Euro customer1_3 = customer1_2.subtractedCurrency(95f, "JPY");
-        System.out.println(customer1.balance()+"\n");
-        System.out.println(customer1_2.balance()+"\n");
-        System.out.println(customer1_3.balance()+"\n");
+        System.out.println(customer1.balance()+ " " + customer1.symbol() +"\n");
+        System.out.println(customer1_2.balance()+ " " + customer1.symbol() +"\n");
+        System.out.println(customer1_3.balance()+ " " + customer1.symbol() +"\n");
     }
 }
