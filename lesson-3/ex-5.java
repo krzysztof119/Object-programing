@@ -22,17 +22,16 @@ interface Currency {
 class Euro extends FakeCantor implements Currency{
     private float money;
     
-    FakeCantor x = new FakeCantor();
-    
     public Euro(float money){
+        super();
         this.money = money;
     }
     public Euro(int money){
         this((float)money);
     }
     
-    public Euro addedCurrency(float value, String currency){return new Euro(money + value / x.euroToRate(currency));}      //FakeCantor doesn't work
-    public Euro subtractedCurrency(float value, String currency){return new Euro(money - value / x.euroToRate(currency));} //FakeCantor doesn't work
+    public Euro addedCurrency(float value, String currency){return new Euro(money + value / euroToRate(currency));}      //FakeCantor doesn't work
+    public Euro subtractedCurrency(float value, String currency){return new Euro(money - value / euroToRate(currency));} //FakeCantor doesn't work
     public String abbreviation(){return "EUR";}
     public String symbol(){return "E";}
     public String balance(){return Float.toString(money);}
