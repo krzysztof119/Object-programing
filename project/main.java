@@ -1,11 +1,11 @@
 import java.util.*;
 
 interface IBook{
-    boolean rent(Member X);
-    boolean handBack(Member X);
+    boolean rent();
+    boolean handBack();
 }
 
-class PaperBook{
+class PaperBook implements IBook{
     private String name;
     private String author;
     private int quantity;
@@ -37,13 +37,13 @@ class PaperBook{
 
 class Library{
     private String name;
-    private Vector<PaperBook> stack = new Vector<PaperBook>(0);
+    private Vector<IBook> stack = new Vector<IBook>(0);
     
     public Library(String name){
         this.name=name;
     }
     
-    public boolean addBook(PaperBook x){
+    public boolean addBook(IBook x){
         return stack.add(x);
     }
 
@@ -57,7 +57,7 @@ class Member{
     private String lastName;
     private String name;
     private int borrowed_limit = 5;
-    private Vector<PaperBook> borrowed_books = new Vector<PaperBook>(borrowed_limit);
+    private Vector<IBook> borrowed_books = new Vector<IBook>(borrowed_limit);
     private int debt = 0;
     
     public Member(String name, String lastName){   
@@ -65,7 +65,7 @@ class Member{
         this.lastName=lastName;
     }
     
-    public boolean addRent(PaperBook... args){
+    public boolean addRent(IBook... args){
         if(args.length > borrowed_limit-borrowed_books.size()){
             System.out.print("Request canceled due to exceeding the limit of rental books possible"+"\n");
             return false;
@@ -86,7 +86,7 @@ class Member{
 
     public void displayBorrowedBooks(){
         for(int i=0;i<borrowed_books.size();i++)
-            System.out.print(borrowed_books.elementAt(i).getName()+" ");
+            System.out.print(borrowed_books.elementAt(i)+" ");
         System.out.println();
     }
 
