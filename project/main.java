@@ -3,6 +3,7 @@ import java.util.*;
 interface IBook{
     boolean rent();
     boolean handBack();
+    String getName();
 }
 
 class PaperBook implements IBook{
@@ -86,7 +87,7 @@ class Member{
 
     public void displayBorrowedBooks(){
         for(int i=0;i<borrowed_books.size();i++)
-            System.out.print(borrowed_books.elementAt(i)+" ");
+            System.out.print(borrowed_books.elementAt(i).getName()+" ");
         System.out.println();
     }
 
