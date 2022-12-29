@@ -41,6 +41,41 @@ class BookShelf implements Shelf{
     }
 }
 
+class AudioShelf implements Shelf{
+
+    private String name;
+    private String author;
+    private int quantity;
+
+    public AudioShelf(String name, String author, int quantity){
+        this.name=name;
+        this.author=author;
+        this.quantity=quantity;
+    }
+
+    public boolean rent(){
+        if(quantity <= 0){
+            return false;
+        }
+        
+        quantity--;
+        return true;
+    }
+
+    public boolean handBack(){
+        quantity++;
+        return true;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void displayQuantity(){
+        System.out.println(this.quantity);
+    }
+}
+
 class Library{
     private String name;
     private Vector<Shelf> stack = new Vector<Shelf>(0);
@@ -114,7 +149,7 @@ public class Main {
 
         Library czytelnia1 = new Library("Czytelnia");
         BookShelf zemsta = new BookShelf("Zemsta", "Aleksander Fredro", 3);
-        BookShelf hobbit = new BookShelf("Hobbit", "John Ronald Reuel Tolkien", 20);
+        AudioShelf hobbit = new AudioShelf("Hobbit", "John Ronald Reuel Tolkien", 20);
         czytelnia1.addBook(zemsta);
         czytelnia1.displayName();
 
@@ -130,6 +165,8 @@ public class Main {
         czytelnik1.addRent();
         zemsta.displayQuantity();
         czytelnik1.addRent(hobbit, hobbit, hobbit, hobbit);
+        hobbit.displayQuantity();
+        czytelnik1.addRent(hobbit);
         hobbit.displayQuantity();
 
         czytelnik1.displayBorrowedBooks();
