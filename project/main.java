@@ -85,7 +85,31 @@ class Library{
     }
     
     public boolean addBook(Shelf x){
+        if(stack.contains(x)) {         // nie moze istniec 2 razy ten sam element
+            System.out.println("Library alredy contains this shelf");
+            return false;
+        } 
         return stack.add(x);
+    }
+
+    public boolean borrowBook(Member czytelnik, Shelf... ksiazki){
+        boolean exist;
+        for(Shelf i: ksiazki){
+            exist = false;
+            for(Shelf j : stack){
+                if(i == j) {
+                    exist = true;
+                    break;
+                }
+            }
+            if(!exist){
+                System.out.println("Request canceled due to: book doesn't belong to this library");
+                return false;
+            }
+        }
+
+        czytelnik.addRent(ksiazki);
+        return true;
     }
 
     public void displayName(){
@@ -108,7 +132,7 @@ class Member{
     
     public boolean addRent(Shelf... args){
         if(args.length > borrowed_limit-borrowed_books.size()){
-            System.out.println("Request canceled due to: exceeding the limit of rental books possible");
+            System.out.println("Request canceled due to: exceeding the limit of rental books for member");
             return false;
         }
         int indeks = 0;
@@ -119,7 +143,7 @@ class Member{
                     j.handBack();
                     indeks--;
                 }
-                System.out.println("Request canceled due to: not enough amount of supply to meet demand");
+                System.out.println("Request canceled due to: exceeding the limit of rental books accessible");
                 return false;
             }
             indeks++;
@@ -156,17 +180,25 @@ public class Main {
 
         Member czytelnik1 = new Member("Pawel", "Kowalski");
         zemsta.displayQuantity();
-        czytelnik1.addRent(zemsta);
+        czytelnia1.borrowBook(czytelnik1, zemsta);
         zemsta.displayQuantity();
-        czytelnik1.addRent(zemsta, zemsta, zemsta);
+        czytelnia1.borrowBook(czytelnik1, zemsta, zemsta, zemsta);
         zemsta.displayQuantity();
-        czytelnik1.addRent(zemsta);
+        czytelnia1.borrowBook(czytelnik1, zemsta);
         zemsta.displayQuantity();
-        czytelnik1.addRent();
+        czytelnia1.borrowBook(czytelnik1);
         zemsta.displayQuantity();
-        czytelnik1.addRent(hobbit, hobbit, hobbit, hobbit);
+
+        czytelnia1.borrowBook(czytelnik1, hobbit);
+        czytelnik1.displayBorrowedBooks();
+        czytelnia1.addBook(hobbit);
         hobbit.displayQuantity();
-        czytelnik1.addRent(hobbit);
+        czytelnia1.borrowBook(czytelnik1, hobbit, hobbit, hobbit, hobbit);
+        hobbit.displayQuantity();
+        czytelnia1.borrowBook(czytelnik1, hobbit);
+        hobbit.displayQuantity();
+        czytelnia1.borrowBook(czytelnik1, zemsta, hobbit);
+        zemsta.displayQuantity();
         hobbit.displayQuantity();
 
         czytelnik1.displayBorrowedBooks();
