@@ -1,17 +1,18 @@
 import java.util.*;
 
-interface IBook{
+interface Shelf{
     boolean rent();
     boolean handBack();
     String getName();
 }
 
-class PaperBook implements IBook{
+class BookShelf implements Shelf{
+
     private String name;
     private String author;
     private int quantity;
 
-    public PaperBook(String name, String author, int quantity){
+    public BookShelf(String name, String author, int quantity){
         this.name=name;
         this.author=author;
         this.quantity=quantity;
@@ -34,22 +35,26 @@ class PaperBook implements IBook{
     public String getName(){
         return name;
     }
+
+    public void displayQuantity(){
+        System.out.println(this.quantity);
+    }
 }
 
 class Library{
     private String name;
-    private Vector<IBook> stack = new Vector<IBook>(0);
+    private Vector<Shelf> stack = new Vector<Shelf>(0);
     
     public Library(String name){
         this.name=name;
     }
     
-    public boolean addBook(IBook x){
+    public boolean addBook(Shelf x){
         return stack.add(x);
     }
 
     public void displayName(){
-        System.out.print(this.stack+"\n");
+        System.out.println(this.name);
     }
 
 }
@@ -58,7 +63,7 @@ class Member{
     private String lastName;
     private String name;
     private int borrowed_limit = 5;
-    private Vector<IBook> borrowed_books = new Vector<IBook>(borrowed_limit);
+    private Vector<Shelf> borrowed_books = new Vector<Shelf>(borrowed_limit);
     private int debt = 0;
     
     public Member(String name, String lastName){   
@@ -66,22 +71,26 @@ class Member{
         this.lastName=lastName;
     }
     
-    public boolean addRent(IBook... args){
+    public boolean addRent(Shelf... args){
         if(args.length > borrowed_limit-borrowed_books.size()){
-            System.out.print("Request canceled due to exceeding the limit of rental books possible"+"\n");
+            System.out.println("Request canceled due to: exceeding the limit of rental books possible");
             return false;
         }
-        for(int i = 0; i < args.length; i++){
-            if(!args[i].rent()) {
-                for(int j = i-1; j >= 0; j--){
-                    args[j].handBack();
+        int indeks = 0;
+        for(Shelf i : args){
+            if(!i.rent()) {
+                for(Shelf j : args){
+                    if(indeks == 0) break;
+                    j.handBack();
+                    indeks--;
                 }
-                System.out.print("Za malo egzemplarzy"+"\n");
+                System.out.println("Request canceled due to: not enough amount of supply to meet demand");
                 return false;
             }
+            indeks++;
         }
         borrowed_books.addAll(Arrays.asList(args));
-        System.out.print(borrowed_books+" "+borrowed_books.size()+"\n");
+        System.out.println(borrowed_books+" "+borrowed_books.size());
         return true;
     }
 
@@ -92,11 +101,11 @@ class Member{
     }
 
     public void displayFullName(){
-        System.out.print(name + " " + lastName + "\n");
+        System.out.println(name + " " + lastName);
     }
 
     public void displayDebt(){
-        System.out.print(debt+"\n");
+        System.out.println(debt);
     }
 }
 
@@ -104,15 +113,28 @@ public class Main {
     public static void main(String[] args) {
 
         Library czytelnia1 = new Library("Czytelnia");
-        PaperBook zemsta = new PaperBook("Zemsta", "Aleksander Fredro", 3);
+        BookShelf zemsta = new BookShelf("Zemsta", "Aleksander Fredro", 3);
+        BookShelf hobbit = new BookShelf("Hobbit", "John Ronald Reuel Tolkien", 20);
         czytelnia1.addBook(zemsta);
         czytelnia1.displayName();
 
 
         Member czytelnik1 = new Member("Pawel", "Kowalski");
-        czytelnik1.addRent(zemsta);czytelnik1.addRent(zemsta, zemsta, zemsta);czytelnik1.addRent(zemsta);
+        zemsta.displayQuantity();
+        czytelnik1.addRent(zemsta);
+        zemsta.displayQuantity();
+        czytelnik1.addRent(zemsta, zemsta, zemsta);
+        zemsta.displayQuantity();
+        czytelnik1.addRent(zemsta);
+        zemsta.displayQuantity();
+        czytelnik1.addRent();
+        zemsta.displayQuantity();
+        czytelnik1.addRent(hobbit, hobbit, hobbit, hobbit);
+        hobbit.displayQuantity();
+
         czytelnik1.displayBorrowedBooks();
 
-        czytelnik1.displayFullName();czytelnik1.displayDebt();
+        czytelnik1.displayFullName();
+        czytelnik1.displayDebt();
     }
 }
