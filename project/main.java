@@ -225,7 +225,6 @@ class Member{
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Pattern.matches("[0-9]{11}", "1234567891a"));
         Library czytelnia1 = new Library("Czytelnia");
         czytelnia1.displayName();
 
