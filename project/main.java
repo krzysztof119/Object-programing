@@ -1,6 +1,6 @@
 import java.util.*;
 
-interface Shelf{
+interface Shelf{                            // deklarowanie interfejsu na asortyment biblioteki
     boolean rent();
     boolean handBack();
     String getName();
@@ -18,8 +18,8 @@ class BookShelf implements Shelf{
         this.quantity=quantity;
     }
 
-    public boolean rent(){
-        if(quantity <= 0){
+    public boolean rent(){                  // zabieranie ksiazki z polki
+        if(quantity <= 0){                  // sprawdzanie czy na polce sa jakies ksiazki do zabrania
             return false;
         }
         
@@ -27,7 +27,7 @@ class BookShelf implements Shelf{
         return true;
     }
 
-    public boolean handBack(){
+    public boolean handBack(){              // odkladanie ksiazki na polke
         quantity++;
         return true;
     }
@@ -53,8 +53,8 @@ class AudioShelf implements Shelf{
         this.quantity=quantity;
     }
 
-    public boolean rent(){
-        if(quantity <= 0){
+    public boolean rent(){                  // zabieranie ksiazki z polki
+        if(quantity <= 0){                  // sprawdzanie czy na polce sa jakies ksiazki do zabrania
             return false;
         }
         
@@ -62,7 +62,7 @@ class AudioShelf implements Shelf{
         return true;
     }
 
-    public boolean handBack(){
+    public boolean handBack(){              // odkladanie ksiazki na polke
         quantity++;
         return true;
     }
@@ -79,37 +79,83 @@ class AudioShelf implements Shelf{
 class Library{
     private String name;
     private Vector<Shelf> stack = new Vector<Shelf>(0);
+    private Vector<Member> visitors = new Vector<Member>(0);
     
     public Library(String name){
         this.name=name;
     }
-    
-    public boolean addBook(Shelf x){
-        if(stack.contains(x)) {         // nie moze istniec 2 razy ten sam element
-            System.out.println("Library alredy contains this shelf");
+
+    public boolean registerMember(String name, String lastName, String id){
+        for(Member i : visitors){
+            if(i.getID().equals(id)){
+                System.out.println("Error: There is already registered member using this ID");
+                System.gc();
+                return false;
+            }
+        }
+
+        try{
+            visitors.add(new Member(name, lastName, id));
+        }catch (Exception e){
+            System.out.println(e);
             return false;
-        } 
-        return stack.add(x);
+        }
+        return true;
     }
 
-    public boolean borrowBook(Member czytelnik, Shelf... ksiazki){
+    public boolean registerBook(String name, String author, int quantity, int type){
+        switch(type){
+            case 0:{
+                stack.add(new BookShelf(name.toLowerCase(), author.toLowerCase(), quantity));
+            break;
+            }
+            case 1:{
+                stack.add(new AudioShelf(name.toLowerCase(), author.toLowerCase(), quantity));
+            break;
+            }
+            default:{
+                System.out.println("Error: Couldn't create shelf due to mismatching type");
+                return false;
+            }
+            }
+
+        return true;
+    }
+    
+
+    public boolean borrowBook(String id, String... ksiazki){  // zlecenie na wypozyczenie ksiazek z polek dla czytelnika
         boolean exist;
-        for(Shelf i: ksiazki){
+        Shelf[] temp = new Shelf[ksiazki.length];
+        int indeks = 0;
+        for(String i: ksiazki){              // sprawdzanie czy dane ksiazki naleza do asortymentu biblioteki
             exist = false;
             for(Shelf j : stack){
-                if(i == j) {
+                if(i.toLowerCase().equals(j.getName())) {
+                    temp[indeks] = j;
+                    indeks++;
                     exist = true;
                     break;
                 }
             }
             if(!exist){
                 System.out.println("Request canceled due to: book doesn't belong to this library");
+                temp = null;
+                System.gc();
                 return false;
             }
         }
 
-        czytelnik.addRent(ksiazki);
-        return true;
+        for(Member k : visitors){
+            if(k.getID().equals(id)){
+                k.addRent(temp);         // przeslanie ksiazek do czytelnika
+                temp = null;
+                System.gc();
+                return true;
+            }
+        }
+
+        System.out.println("Error: Missing registered member with this ID");
+        return false;
     }
 
     public void displayName(){
@@ -121,22 +167,27 @@ class Library{
 class Member{
     private String lastName;
     private String name;
+    private String id;
     private int borrowed_limit = 5;
     private Vector<Shelf> borrowed_books = new Vector<Shelf>(borrowed_limit);
     private int debt = 0;
     
-    public Member(String name, String lastName){   
+    public Member(String name, String lastName, String id){ 
+        if(id.length() != 11){
+            throw new IllegalArgumentException ("id have to be 11 numbers");
+        }  
         this.name=name;
         this.lastName=lastName;
+        this.id = id;
     }
     
-    public boolean addRent(Shelf... args){
-        if(args.length > borrowed_limit-borrowed_books.size()){
+    public boolean addRent(Shelf[] args){      // wypozyczanie ksiazek przez czytelnika
+        if(args.length > borrowed_limit-borrowed_books.size()){         // sprawdzanie czy nie przekracza limitu ksiazek do wypozyczenia na osobe
             System.out.println("Request canceled due to: exceeding the limit of rental books for member");
             return false;
         }
         int indeks = 0;
-        for(Shelf i : args){
+        for(Shelf i : args){                    // sprawdzanie czy na polkach sa ksiazka do wypozyczenia
             if(!i.rent()) {
                 for(Shelf j : args){
                     if(indeks == 0) break;
@@ -148,12 +199,16 @@ class Member{
             }
             indeks++;
         }
-        borrowed_books.addAll(Arrays.asList(args));
+        borrowed_books.addAll(Arrays.asList(args));     // rejestrowanie wypozyczenia ksiazek przez czytelnika
         System.out.println(borrowed_books+" "+borrowed_books.size());
         return true;
     }
 
-    public void displayBorrowedBooks(){
+    public String getID(){
+        return id;
+    }
+
+    public void displayBorrowedBooks(){         // wyswietlenie listy wypozyczonych ksiazek przez czytelnika
         for(int i=0;i<borrowed_books.size();i++)
             System.out.print(borrowed_books.elementAt(i).getName()+" ");
         System.out.println();
@@ -172,38 +227,12 @@ public class Main {
     public static void main(String[] args) {
 
         Library czytelnia1 = new Library("Czytelnia");
-        BookShelf zemsta = new BookShelf("Zemsta", "Aleksander Fredro", 3);
-        AudioShelf hobbit = new AudioShelf("Hobbit", "John Ronald Reuel Tolkien", 20);
-        czytelnia1.addBook(zemsta);
         czytelnia1.displayName();
 
-
-        Member czytelnik1 = new Member("Pawel", "Kowalski");
-        zemsta.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, zemsta);
-        zemsta.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, zemsta, zemsta, zemsta);
-        zemsta.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, zemsta);
-        zemsta.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1);
-        zemsta.displayQuantity();
-
-        czytelnia1.borrowBook(czytelnik1, hobbit);
-        czytelnik1.displayBorrowedBooks();
-        czytelnia1.addBook(hobbit);
-        hobbit.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, hobbit, hobbit, hobbit, hobbit);
-        hobbit.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, hobbit);
-        hobbit.displayQuantity();
-        czytelnia1.borrowBook(czytelnik1, zemsta, hobbit);
-        zemsta.displayQuantity();
-        hobbit.displayQuantity();
-
-        czytelnik1.displayBorrowedBooks();
-
-        czytelnik1.displayFullName();
-        czytelnik1.displayDebt();
+        czytelnia1.registerBook("TesT", "Ja", 1, 0);
+        czytelnia1.registerMember("Man", "iek", "123456789");
+        czytelnia1.borrowBook("123456789", "tEst");
+        czytelnia1.registerMember("Man", "iek", "12345678910");
+        czytelnia1.borrowBook("12345678910", "tEst");
     }
 }
