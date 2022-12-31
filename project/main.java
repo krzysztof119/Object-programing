@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.regex.*;
 
 interface Shelf{                            // deklarowanie interfejsu na asortyment biblioteki
     boolean rent();
@@ -89,7 +90,6 @@ class Library{
         for(Member i : visitors){
             if(i.getID().equals(id)){
                 System.out.println("Error: There is already registered member using this ID");
-                System.gc();
                 return false;
             }
         }
@@ -173,9 +173,9 @@ class Member{
     private int debt = 0;
     
     public Member(String name, String lastName, String id){ 
-        if(id.length() != 11){
-            throw new IllegalArgumentException ("id have to be 11 numbers");
-        }  
+        if(!Pattern.matches("[0-9]{11}", id)){
+            throw new IllegalArgumentException ("ID have to consists of 11 numbers");
+        } 
         this.name=name;
         this.lastName=lastName;
         this.id = id;
@@ -225,7 +225,7 @@ class Member{
 
 public class Main {
     public static void main(String[] args) {
-
+        System.out.println(Pattern.matches("[0-9]{11}", "1234567891a"));
         Library czytelnia1 = new Library("Czytelnia");
         czytelnia1.displayName();
 
@@ -234,5 +234,7 @@ public class Main {
         czytelnia1.borrowBook("123456789", "tEst");
         czytelnia1.registerMember("Man", "iek", "12345678910");
         czytelnia1.borrowBook("12345678910", "tEst");
+        czytelnia1.registerMember("Man", "iek", "123b567891a");
+        czytelnia1.borrowBook("123b567891a", "tEst");
     }
 }
