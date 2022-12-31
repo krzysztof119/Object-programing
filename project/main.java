@@ -77,6 +77,16 @@ class AudioShelf implements Shelf{
     }
 }
 
+class Helper{
+    public Shelf[] shelf;
+    public Member member;
+
+    public Helper(Shelf[] shelf, Member member){
+        this.shelf = shelf;
+        this.member = member;
+    }
+}
+
 class Library{
     private String name;
     private Vector<Shelf> stack = new Vector<Shelf>(0);
@@ -122,8 +132,7 @@ class Library{
         return true;
     }
     
-
-    public boolean borrowBook(String id, String... ksiazki){  // zlecenie na wypozyczenie ksiazek z polek dla czytelnika
+    private Helper checkCorrectness(String id, String... ksiazki){
         boolean exist;
         Shelf[] temp = new Shelf[ksiazki.length];
         int indeks = 0;
@@ -141,27 +150,48 @@ class Library{
                 System.out.println("Request canceled due to: book doesn't belong to this library");
                 temp = null;
                 System.gc();
-                return false;
+                return null;
             }
         }
 
         for(Member k : visitors){
-            if(k.getID().equals(id)){
-                k.addRent(temp);         // przeslanie ksiazek do czytelnika
-                temp = null;
-                System.gc();
-                return true;
+            if(k.getID().equals(id)){           // sprawdzanie czy odwiedzajacy jest zarejestrowany w bibliotece
+                Helper helper = new Helper(temp, k);
+                return helper;
             }
         }
 
         System.out.println("Error: Missing registered member with this ID");
-        return false;
+        temp = null;
+        System.gc();
+        return null;
+    }
+
+    public boolean borrowBook(String id, String... ksiazki){  // zlecenie na wypozyczenie ksiazek z polek dla czytelnika
+        Helper helper = checkCorrectness(id, ksiazki);
+        if(helper == null)
+            return false;
+
+        helper.member.rentBook(helper.shelf);                // przeslanie ksiazek do czytelnika
+        helper = null;
+        System.gc();
+        return true;
+    }
+
+    public boolean restoreBook(String id, String... ksiazki){   // zlecenie na odlozenie ksiazek od czytelnika na polki
+        Helper helper = checkCorrectness(id, ksiazki);
+        if(helper == null)
+            return false;
+
+        helper.member.subtractBook(helper.shelf);         // odbieranie ksiazek od czytelnika
+        helper = null;
+        System.gc();
+        return true;
     }
 
     public void displayName(){
         System.out.println(this.name);
     }
-
 }
 
 class Member{
@@ -181,7 +211,7 @@ class Member{
         this.id = id;
     }
     
-    public boolean addRent(Shelf[] args){      // wypozyczanie ksiazek przez czytelnika
+    public boolean rentBook(Shelf[] args){      // wypozyczanie ksiazek przez czytelnika
         if(args.length > borrowed_limit-borrowed_books.size()){         // sprawdzanie czy nie przekracza limitu ksiazek do wypozyczenia na osobe
             System.out.println("Request canceled due to: exceeding the limit of rental books for member");
             return false;
@@ -201,6 +231,24 @@ class Member{
         }
         borrowed_books.addAll(Arrays.asList(args));     // rejestrowanie wypozyczenia ksiazek przez czytelnika
         System.out.println(borrowed_books+" "+borrowed_books.size());
+        return true;
+    }
+
+    public boolean subtractBook(Shelf[] args){
+        boolean exist, blunder = false;
+        for(Shelf i : args){
+            exist = false;
+            if(borrowed_books.contains(i)){
+                borrowed_books.removeElement(i);
+                exist = true;
+            }
+            if(exist == false){
+                System.out.println("Book: "+ i.getName() +" doesn't belong to this library");
+                blunder = true;
+            }
+        }
+        if(blunder)
+            return false;
         return true;
     }
 
@@ -229,11 +277,13 @@ public class Main {
         czytelnia1.displayName();
 
         czytelnia1.registerBook("TesT", "Ja", 1, 0);
+        czytelnia1.registerBook("TesT1", "Ja", 1, 0);
         czytelnia1.registerMember("Man", "iek", "123456789");
         czytelnia1.borrowBook("123456789", "tEst");
         czytelnia1.registerMember("Man", "iek", "12345678910");
         czytelnia1.borrowBook("12345678910", "tEst");
         czytelnia1.registerMember("Man", "iek", "123b567891a");
         czytelnia1.borrowBook("123b567891a", "tEst");
+        czytelnia1.restoreBook("12345678910", "teSt1", "tEst");
     }
 }
