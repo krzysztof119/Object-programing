@@ -1,0 +1,24 @@
+interface Forecast{
+    float current();
+    final class Fake implements Forecast{
+        public float current(){
+            return 2.3f;
+        }
+    }
+}
+
+class Weather implements Forecast{
+    Forecast forecast = new Forecast.Fake();
+    
+    public float current(){
+        return forecast.current();
+    }
+}
+
+class Main{
+    public static void main(String[] args) {
+        Weather weather = new Weather();
+        Weather.current();
+        return 0;
+    }
+}
